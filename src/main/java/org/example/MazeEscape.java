@@ -1,3 +1,5 @@
+package org.example;
+
 import java.util.Scanner;
 
 // Eccezione personalizzata per movimenti fuori dai limiti
@@ -40,14 +42,26 @@ public class MazeEscape {
             char move = scanner.next().toUpperCase().charAt(0);
 
             try {
-                // Chiamare il metodo per muovere il giocatore
-                // Verificare se ha raggiunto l'uscita e terminare il gioco
+                movePlayer(move);
+                escaped = finito();
             } catch (OutOfBoundsException | WallCollisionException e) {
-                // Stampare il messaggio di errore dell'eccezione
+                System.out.println(e.getMessage());
             }
         }
 
         scanner.close();
+    }
+
+
+    static boolean finito(){
+        for (int i = 0; i < LABIRINTO.length; i++) {
+            for (int j = 0; j < LABIRINTO[i].length; j++) {
+                if(LABIRINTO[i][j] == 'E'){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /**
@@ -58,21 +72,73 @@ public class MazeEscape {
      * - Se il movimento è valido, aggiornare la posizione
      */
     private static void movePlayer(char direction) throws OutOfBoundsException, WallCollisionException {
-        // Dichiarare nuove variabili per la posizione dopo il movimento
-        
-        // Switch-case per aggiornare le nuove coordinate in base alla direzione
-        
-        // Controllare se il movimento è fuori dalla matrice e lanciare OutOfBoundsException
-        
-        // Controllare se il movimento porta su un muro e lanciare WallCollisionException
-        
-        // Aggiornare la matrice con la nuova posizione del giocatore
+        switch (direction){
+            case 'W':
+                if(playerY-1 < 0){
+                    throw new OutOfBoundsException("uscita dal campo di gioco");
+                }
+                else if(LABIRINTO[playerY-1][playerX] == '#'){
+                    throw new WallCollisionException("colpito un muro");
+                }
+                else{
+                    LABIRINTO[playerY][playerX] = '.';
+                    playerY--;
+                    LABIRINTO[playerY][playerX] = 'P';
+                }
+                break;
+            case 'S':
+                if(playerY+1 > 4){
+                    throw new OutOfBoundsException("uscita dal campo di gioco");
+                }
+                else if(LABIRINTO[playerY+1][playerX] == '#'){
+                    throw new WallCollisionException("colpito un muro");
+                }
+                else{
+                    LABIRINTO[playerY][playerX] = '.';
+                    playerY++;
+                    LABIRINTO[playerY][playerX] = 'P';
+                }
+                break;
+            case 'A':
+                if(playerX-1 < 0){
+                    throw new OutOfBoundsException("uscita dal campo di gioco");
+                }
+                else if(LABIRINTO[playerY][playerX-1] == '#'){
+                    throw new WallCollisionException("colpito un muro");
+                }
+                else{
+                    LABIRINTO[playerY][playerX] = '.';
+                    playerX--;
+                    LABIRINTO[playerY][playerX] = 'P';
+                }
+                break;
+            case 'D':
+                if(playerX+1 > 4){
+                    throw new OutOfBoundsException("uscita dal campo di gioco");
+                }
+                else if(LABIRINTO[playerY][playerX+1] == '#'){
+                    throw new WallCollisionException("colpito un muro");
+                }
+                else{
+                    LABIRINTO[playerY][playerX] = '.';
+                    playerX++;
+                    LABIRINTO[playerY][playerX] = 'P';
+                }
+                break;
+            default:
+                System.out.println("input non accettato");
+        }
     }
 
     /**
      * Metodo per stampare il labirinto attuale
      */
     private static void printMaze() {
-        // Stampare la matrice riga per riga
+        for (int i = 0; i < LABIRINTO.length; i++) {
+            for (int j = 0; j < LABIRINTO[i].length; j++) {
+                System.out.print(LABIRINTO[i][j]);
+            }
+            System.out.println();
+        }
     }
 }
